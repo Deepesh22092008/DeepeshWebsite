@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deepesh Tic Tac Toe Game (22092008)</title>
+  <style>
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 5px;
+      margin: 20px auto;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      font-size: 36px;
+      text-align: center;
+      vertical-align: middle;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      color: #007BFF;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    h2 {
+      color: #6C757D;
+      text-align: center;
+    }
+
+    .draw-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 2px solid #007BFF;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      display: none;
+    }
+
+    .draw-popup h3 {
+      color: #007BFF;
+      margin-bottom: 10px;
+    }
+
+    .draw-popup p {
+      color: #6C757D;
+    }
+
+    hr {
+      border: 0;
+      height: 2px;
+      background-color: #007BFF;
+      width: 50%;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Deepesh Tic Tac Toe Game</h1>
+  <h2>(22092008)</h2>
+  <hr>
+  <h2>Tic Tac Toe Game</h2>
+  <div class="board" id="board">
+    <button class="cell" onclick="makeMove(0, 0)"></button>
+    <button class="cell" onclick="makeMove(0, 1)"></button>
+    <button class="cell" onclick="makeMove(0, 2)"></button>
+    <button class="cell" onclick="makeMove(1, 0)"></button>
+    <button class="cell" onclick="makeMove(1, 1)"></button>
+    <button class="cell" onclick="makeMove(1, 2)"></button>
+    <button class="cell" onclick="makeMove(2, 0)"></button>
+    <button class="cell" onclick="makeMove(2, 1)"></button>
+    <button class="cell" onclick="makeMove(2, 2)"></button>
+  </div>
+  <p id="status"></p>
+
+  <div class="draw-popup" id="drawPopup">
+    <h3>It's a Draw!</h3>
+    <p>The game ended in a draw. No player wins.</p>
+  </div>
+
+  <hr>
+  <h2>Here's the Actual Python Code:</h2>
+  <pre>
+import ipywidgets as widgets
+from IPython.display import display
+
+board = [['', '', ''],
+         ['', '', ''],
+         ['', '', '']]
+
+current_player = 'X'
+game_ended = False
+
+def make_move(row, col):
+    global current_player, game_ended
+
+    if board[row][col] == '' and not game_ended:
+        board[row][col] = current_player
+        buttons[row][col].description = current_player
+        if check_winner():
+            status.value = f"Player {current_player} wins!"
+            game_ended = True
+        elif is_draw():
+            status.value = "It's a draw!"
+            game_ended = True
+            show_draw_popup()
+        else:
+            current_player = 'O' if current_player == 'X' else 'X'
+
+def check_winner():
+    # Check rows, columns, and diagonals for a win
+    for i in range(3):
+        if board[i][0] != '' and board[i][0] == board[i][1] == board[i][2]:
+            return True
+        if board[0][i] != '' and board[0][i] == board[1][i] == board[2][i]:
+            return True
+    if board[0][0] != '' and board[0][0] == board[1][1] == board[2][2]:
+        return True
+    if board[0][2] != '' and board[0][2] == board[1][1] == board[2][0]:
+        return True
+    return False
+
+def is_draw():
+    return all(board[i][j] != '' for i in range(3) for j in range(3))
+
+buttons = [[widgets.Button(description='', layout=widgets.Layout(width='100px', height='100px', font_size='36px'))
+            for _ in range(3)] for _ in range(3)]
+
+for i in range(3):
+    for j in range(3):
+        button = buttons[i][j]
+        button.on_click(lambda _, row=i, col=j: make_move(row, col))
+
+board_display = widgets.GridBox(children=[widgets.HBox(row) for row in buttons])
+status = widgets.HTML("<h1>Tic Tac Toe</h1>")
+
+display(status)
+display(board_display)
+  </pre>
+
+  <script>
+    let board = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+
+    let currentPlayer = 'X';
+    let gameEnded = false;
+
+    function makeMove(row, col) {
+      if (board[row][col] === '' && !gameEnded) {
+        board[row][col] = currentPlayer;
+        document.getElementById('board').children[row * 3 + col].textContent = currentPlayer;
+        if (checkWinner()) {
+          document.getElementById('status').textContent = `Player ${currentPlayer} wins!`;
+          gameEnded = true;
+        } else if (isDraw()) {
+          document.getElementById('status').textContent = "It's a draw!";
+          gameEnded = true;
+          showDrawPopup();
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+      }
+    }
+
+    function checkWinner() {
+      // Check rows, columns, and diagonals for a win
+      for (let i = 0; i < 3; i++) {
+        if (board[i][0] !== '' && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
+          return true;
+        }
+        if (board[0][i] !== '' && board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
+          return true;
+        }
+      }
+      if (board[0][0] !== '' && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
+        return true;
+      }
+      if (board[0][2] !== '' && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
+        return true;
+      }
+      return false;
+    }
+
+    function isDraw() {
+      return board.every(row => row.every(cell => cell !== ''));
+    }
+
+    function showDrawPopup() {
+      let drawPopup = document.getElementById('drawPopup');
+      drawPopup.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
